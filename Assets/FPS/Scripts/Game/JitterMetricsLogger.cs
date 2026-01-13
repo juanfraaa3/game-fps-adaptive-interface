@@ -38,7 +38,7 @@ namespace Unity.FPS.Game
 
         private float intervalTimer;
         private string filePath;
-        CultureInfo inv = new CultureInfo("es-CL");
+        private static readonly CultureInfo CsvCulture = CultureInfo.InvariantCulture;
 
 
         public string FilePath => filePath;
@@ -224,7 +224,7 @@ namespace Unity.FPS.Game
 
 
                     File.AppendAllText(filePath,
-                        $"TimeToTarget;{WaveNumber};{ttt.ToString("F4", inv)}\n");
+                        $"TimeToTarget;{WaveNumber};{ttt.ToString("F4", CsvCulture)}\n");
 
                     t.completed = true;
                 }
@@ -290,15 +290,15 @@ namespace Unity.FPS.Game
 
             string line =
                 $"{AttemptID};{RetryNumber};{WaveNumber};{Death};" +
-                $"{lastJ.ToString("F4", inv)};" +
-                $"{lastS.ToString("F4", inv)};" +
+                $"{lastJ.ToString("F4", CsvCulture)};" +
+                $"{lastS.ToString("F4", CsvCulture)};" +
                 $"{isHard};" +
-                $"{peak.ToString("F4", inv)};" +
-                $"{variance.ToString("F4", inv)};" +
-                $"{stddev.ToString("F4", inv)};" +
+                $"{peak.ToString("F4", CsvCulture)};" +
+                $"{variance.ToString("F4", CsvCulture)};" +
+                $"{stddev.ToString("F4", CsvCulture)};" +
                 $"{jitterEvents};{overshootCount};" +
-                $"{jitterAreaAccumulator.ToString("F4", inv)};" +
-                $"{directionBias.ToString("F4", inv)};" +
+                $"{jitterAreaAccumulator.ToString("F4", CsvCulture)};" +
+                $"{directionBias.ToString("F4", CsvCulture)};" +
                 $"{jitterClusterCount}\n";
 
             File.AppendAllText(filePath, line);
@@ -328,7 +328,7 @@ namespace Unity.FPS.Game
             float failTime = Time.time - LastWaveStartTime;
 
             File.AppendAllText(filePath,
-                $"WaveFailTime;{wave};{failTime.ToString("F4", inv)}\n");
+                $"WaveFailTime;{wave};{failTime.ToString("F4", CsvCulture)}\n");
         }
 
         public void WriteWaveCompletedSeparator(int wave)
@@ -364,8 +364,10 @@ namespace Unity.FPS.Game
                     );
 
                     // 🔥 CSV
-                    File.AppendAllText(filePath,
-                        $"TimeToTargetHit;{WaveNumber};{root.name};{ttt.ToString("F4").Replace('.', ',')}\n");
+                    File.AppendAllText(
+                        filePath,
+                        $"TimeToTargetHit;{WaveNumber};{root.name};{ttt.ToString("F4", CsvCulture)}\n"
+                    );
 
                     // 🔐 Marcar como completado
                     t.completed = true;

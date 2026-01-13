@@ -1,2 +1,0 @@
-﻿SegmentID;PlatformName;LandingOffset_m;VerticalSpeed_mps;LandingFailed;LandingType;MicroCorrections_0_5s;PostStabilizationTime_s;PostLandingDrift_m;PostLandingFall
-1;PlatformSurface_1;3.1133;-4.010305;0;Crash;0;0.2118343;0;0

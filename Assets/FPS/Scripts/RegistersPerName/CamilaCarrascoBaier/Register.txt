@@ -1,0 +1,26 @@
+Jetpack1:
+
+	muertes: 3
+
+Jetpack2:
+	muertes: 7
+	- muerte 2 checkear 
+
+Oleadas:
+	oleada 1: 
+		muertes: perfect
+	
+	oleada 2:
+		muertes: 2
+
+	oleada 3:
+		muertes: 6
+
+Movement:
+	Zone1
+		muertes: perfect
+
+	Zone2
+		muertes: 4
+
+

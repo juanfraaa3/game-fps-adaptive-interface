@@ -36,6 +36,36 @@ public class PlayerRespawn : MonoBehaviour
 
     void RespawnAtCheckpoint()
     {
+        // === Registrar DEATH en ObstacleGateMetrics CSV ===
+        if (!string.IsNullOrEmpty(ObstacleGateMetricsRework.ActiveGateCsvPath))
+        {
+            File.AppendAllText(
+                ObstacleGateMetricsRework.ActiveGateCsvPath,
+                $"DEATH;;;;;;;;;;;;;\n"
+            );
+        }
+
+        LogMovementDeath();
+        // 🔁 RESET PLATAFORMAS MÓVILES (JUANES)
+        var movingPlatforms = FindObjectsOfType<MovingPlatformMultiple>();
+        foreach (var platform in movingPlatforms)
+        {
+            platform.ResetPlatform();
+        }
+
+        // 🔁 RESET PLATAFORMAS SIMPLES (2 puntos)
+        var simplePlatforms = FindObjectsOfType<MovingPlatform>();
+        foreach (var platform in simplePlatforms)
+        {
+            platform.ResetPlatform();
+        }
+
+        var syncedPlatforms = FindObjectsOfType<PerfectSyncedTwoPoints_WithMargin>();
+        foreach (var synced in syncedPlatforms)
+        {
+            synced.ResetPlatforms();
+        }
+
         // === Registrar DEATH en JetpackTrajectoryLogger ===
         var traj = FindObjectOfType<JetpackTrajectoryLogger>();
         if (traj != null)
@@ -224,6 +254,27 @@ public class PlayerRespawn : MonoBehaviour
 
             Debug.Log("✅ Arma equipada correctamente tras respawn (DelayedWeaponEquip)");
         }
+    }
+    void LogMovementDeath()
+    {
+        string header =
+            "EventType;SegmentID;ElementID;TimeOnPlatform;RelativePositionStd;RelativePositionMean;RelativePositionMax;RelativePositionMin;" +
+            "SampleCount;EdgeRiskTime;CorrectionPeaks;ObstacleType;ClearType;MinClearance;MicroCorrections;ObstacleDuration";
+
+        string[] fields = new string[16];
+
+        fields[0] = "DEATH";
+        fields[1] = "";
+
+
+        for (int i = 2; i < fields.Length; i++)
+            fields[i] = "";
+
+        CSVMetricWriter.WriteLine(
+            "MovementMetrics",
+            header,
+            string.Join(";", fields)
+        );
     }
 
 }

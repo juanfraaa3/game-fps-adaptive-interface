@@ -12,11 +12,18 @@ public class PerfectSyncedTwoPoints_WithMargin : MonoBehaviour
     public float travelTime = 2f;    // tiempo de ida/vuelta
     public float pauseTime = 0.5f;   // pausa al cambiar de dirección
 
+    [Header("Activación")]
+    public string playerTag = "Player";
+
     private Vector3 startA;
     private Vector3 startB;
     private Vector3 leftLimitA;
     private Vector3 rightLimitB;
     private Vector3 midPoint;
+
+    private bool isActive = false;
+    private bool canActivate = false;
+    private Coroutine moveRoutine;
 
     void Start()
     {
@@ -31,8 +38,44 @@ public class PerfectSyncedTwoPoints_WithMargin : MonoBehaviour
         leftLimitA = new Vector3(midX - margin, startA.y, startA.z);
         rightLimitB = new Vector3(midX + margin, startB.y, startB.z);
 
-        // Iniciar el ciclo de movimiento
-        StartCoroutine(MoveCycle());
+        Invoke(nameof(EnableActivation), 0.1f);
+    }
+    void EnableActivation()
+    {
+        canActivate = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!canActivate) return;
+        if (isActive) return;
+
+        if (other.CompareTag(playerTag))
+        {
+            Activate();
+        }
+    }
+
+    public void Activate()
+    {
+        if (isActive) return;
+
+        isActive = true;
+        moveRoutine = StartCoroutine(MoveCycle());
+    }
+
+    public void ResetPlatforms()
+    {
+        if (moveRoutine != null)
+        {
+            StopCoroutine(moveRoutine);
+            moveRoutine = null;
+        }
+
+        isActive = false;
+
+        platformA.position = startA;
+        platformB.position = startB;
     }
 
     IEnumerator MoveCycle()
@@ -71,23 +114,22 @@ public class PerfectSyncedTwoPoints_WithMargin : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    // 🔹 Dibuja líneas guía en la escena para visualizar los puntos de margen
     void OnDrawGizmos()
     {
         if (platformA == null || platformB == null) return;
 
-        Vector3 startApos = Application.isPlaying ? startA : platformA.position;
-        Vector3 startBpos = Application.isPlaying ? startB : platformB.position;
+        Vector3 a = Application.isPlaying ? startA : platformA.position;
+        Vector3 b = Application.isPlaying ? startB : platformB.position;
 
-        float midX = (startApos.x + startBpos.x) / 2f;
-        Vector3 mid = new Vector3(midX, startApos.y, startApos.z);
+        float midX = (a.x + b.x) / 2f;
+        Vector3 mid = new Vector3(midX, a.y, a.z);
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(new Vector3(mid.x, mid.y + 5, mid.z), new Vector3(mid.x, mid.y - 5, mid.z)); // línea del punto medio
+        Gizmos.DrawLine(new Vector3(mid.x, mid.y + 5, mid.z), new Vector3(mid.x, mid.y - 5, mid.z));
 
         Gizmos.color = Color.cyan;
-        Gizmos.DrawLine(new Vector3(mid.x - margin, mid.y + 5, mid.z), new Vector3(mid.x - margin, mid.y - 5, mid.z)); // margen A
-        Gizmos.DrawLine(new Vector3(mid.x + margin, mid.y + 5, mid.z), new Vector3(mid.x + margin, mid.y - 5, mid.z)); // margen B
+        Gizmos.DrawLine(new Vector3(mid.x - margin, mid.y + 5, mid.z), new Vector3(mid.x - margin, mid.y - 5, mid.z));
+        Gizmos.DrawLine(new Vector3(mid.x + margin, mid.y + 5, mid.z), new Vector3(mid.x + margin, mid.y - 5, mid.z));
     }
 #endif
 }

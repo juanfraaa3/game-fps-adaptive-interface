@@ -320,11 +320,18 @@ namespace Unity.FPS.AI
 
         public void SetNavDestination(Vector3 destination)
         {
-            if (NavMeshAgent)
-            {
-                NavMeshAgent.SetDestination(destination);
-            }
+            if (NavMeshAgent == null)
+                return;
+
+            if (!NavMeshAgent.enabled)
+                return;
+
+            if (!NavMeshAgent.isOnNavMesh)
+                return;
+
+            NavMeshAgent.SetDestination(destination);
         }
+
 
         public void UpdatePathDestination(bool inverseOrder = false)
         {

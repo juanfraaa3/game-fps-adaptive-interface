@@ -1,3 +1,5 @@
+
+/*
 using UnityEngine;
 
 public class JoystickDebugger : MonoBehaviour
@@ -25,3 +27,4 @@ public class JoystickDebugger : MonoBehaviour
         }
     }
 }
+*/

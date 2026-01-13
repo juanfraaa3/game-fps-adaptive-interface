@@ -74,6 +74,8 @@ namespace Unity.FPS.Gameplay
         public bool IsPlayergrounded() => m_PlayerCharacterController.IsGrounded;
 
         public UnityAction<bool> OnUnlockJetpack;
+        public bool IsJetpackInUse { get; private set; }
+        public float LastJetpackUseTime { get; private set; }
 
         void Start()
         {
@@ -160,8 +162,11 @@ namespace Unity.FPS.Gameplay
             // jetpack usage
             bool jetpackIsInUse = m_CanUseJetpack && IsJetpackUnlocked && CurrentFillRatio > 0f &&
                                   m_InputHandler.GetJumpInputHeld();
+            IsJetpackInUse = jetpackIsInUse;
+
             if (jetpackIsInUse)
             {
+                LastJetpackUseTime = Time.time;
                 // store the last time of use for refill delay
                 m_LastTimeOfUse = Time.time;
 

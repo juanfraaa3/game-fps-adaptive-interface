@@ -1,15 +1,25 @@
 using System.Globalization;
 using System.IO;
 using UnityEngine;
+using System.Collections.Generic;
+
 
 public class MultitaskMetricsLogger : MonoBehaviour
 {
-    public PlatformPathAdapter path;
+    private HashSet<int> hitBarriers = new HashSet<int>();
+    private HashSet<int> allBarriers = new HashSet<int>();
+
+    [Header("Platform Paths")]
+    public PlatformPathAdapter[] paths;
+    private PlatformPathAdapter activePath;
+    private float activePathDistance = float.MaxValue;
+
     public bool loggingActive = true;
 
     private int AttemptID = 1;
     private float attemptStartTime;
-
+    private int LapID = 0;
+    private float lapStartTime;
     private float devSum = 0f;
     private int devSamples = 0;
 
@@ -17,6 +27,9 @@ public class MultitaskMetricsLogger : MonoBehaviour
     private CultureInfo CI = CultureInfo.InvariantCulture;
     // ---- Lap / Attempt state
     private int lapsCompleted = 0;
+
+    // ---- Lap progress tracking
+    private float lapProgressMax01 = 0f;
     private float lapProgress01 = 0f;
     private bool deathOccurred = false;
     private Vector3 _lastPos;
@@ -34,10 +47,10 @@ public class MultitaskMetricsLogger : MonoBehaviour
     private const float MIN_SPEED_FOR_MICRO = 0.3f;   // m/s
     private const float MIN_DIR_CHANGE_DEG = 8f;      // grados
     private const float MAX_DIR_CHANGE_DEG = 45f;     // grados
-
-    // ---- Obstacles
-    private int obstacleHits = 0;
-    private int obstacleOpportunities = 0;
+    private bool lapOpen = false;
+    [Header("Lap Progress Normalization")]
+    [Tooltip("Valor de GetProgress01 que representa una vuelta REAL completa")]
+    public float lapCompletionFactor = 0.844f;
 
 
     void Start()
@@ -58,16 +71,14 @@ public class MultitaskMetricsLogger : MonoBehaviour
         {
             File.WriteAllText(
                 fullPath,
-                "AttemptID;AttemptDuration_s;LapsCompleted;LapProgress_0_1;DeathOccurred;MeanDeviation_m;SpeedSD_mps;MicroCorrectionsRate_per_s;ObstacleHitRate\n"
+                "AttemptID;LapID;LapDuration_s;AttemptDuration_s;LapProgress_0_1;DeathOccurred;MeanDeviation_m;SpeedSD_mps;MicroCorrectionsRate_per_s;ObstacleHitRate\n"
             );
         }
 
         // 🔴 CONTAR OBSTÁCULOS UNA SOLA VEZ
-        obstacleOpportunities = FindObjectsOfType<ObstacleHitReporter>().Length;
 
         StartAttempt();
 
-        Debug.Log($"[MULTITASK] Obstacles detected: {obstacleOpportunities}");
         Debug.Log("CSV PATH: " + fullPath);
     }
 
@@ -76,10 +87,37 @@ public class MultitaskMetricsLogger : MonoBehaviour
 
     void Update()
     {
-        if (!loggingActive || path == null)
+        if (!loggingActive)
+            return;
+
+        if (paths == null || paths.Length == 0)
             return;
 
         Vector3 pos = transform.position;
+
+        // =====================================================
+        // 0) SELECCIONAR PATH ACTIVO (plataforma más cercana)
+        // =====================================================
+        activePath = null;
+        float bestDist = float.MaxValue;
+
+        foreach (var p in paths)
+        {
+            if (p == null)
+                continue;
+
+            Vector3 closest = p.GetClosestPoint(pos);
+            float d = Vector3.Distance(pos, closest);
+
+            if (d < bestDist)
+            {
+                bestDist = d;
+                activePath = p;
+            }
+        }
+
+        if (activePath == null)
+            return;
 
         /* =====================================================
          * 1) VELOCIDAD PLANA (XZ)
@@ -132,12 +170,12 @@ public class MultitaskMetricsLogger : MonoBehaviour
         }
 
         /* =====================================================
-         * 3) MEAN DEVIATION (ignorando Y)
+         * 3) MEAN DEVIATION (path activo)
          * ===================================================== */
-        Vector3 closest = path.GetClosestPoint(pos);
+        Vector3 closestPoint = activePath.GetClosestPoint(pos);
 
         Vector3 flatPos = new Vector3(pos.x, 0f, pos.z);
-        Vector3 flatClosest = new Vector3(closest.x, 0f, closest.z);
+        Vector3 flatClosest = new Vector3(closestPoint.x, 0f, closestPoint.z);
 
         float deviation = Vector3.Distance(flatPos, flatClosest);
 
@@ -145,52 +183,168 @@ public class MultitaskMetricsLogger : MonoBehaviour
         devSamples++;
 
         /* =====================================================
-         * 4) PROGRESO DE VUELTA (0–1)
+         * 4) PROGRESO DE LAP NORMALIZADO (0–1)
          * ===================================================== */
-        lapProgress01 = path.GetProgress01(pos);
+        float rawProgress = activePath.GetProgress01(pos);
+        lapProgress01 = NormalizeLapProgress(rawProgress);
+
+        if (lapOpen)
+        {
+            lapProgressMax01 = Mathf.Max(lapProgressMax01, lapProgress01);
+        }
     }
+
 
 
 
     public void StartAttempt()
     {
+        // ===============================
+        // Attempt state (NO abrir laps)
+        // ===============================
         attemptStartTime = Time.time;
+        LapID = 0;
+        lapOpen = false;
 
-        // ---- Deviation
+        // ===============================
+        // RECONSTRUIR BARRERAS DEL INTENTO
+        // ===============================
+        hitBarriers.Clear();
+        allBarriers.Clear();
+
+        var reporters = FindObjectsOfType<ObstacleHitReporter>();
+
+        foreach (var obs in reporters)
+        {
+            Vector3 barrierCenter =
+                (obs.transform.parent != null &&
+                 obs.transform.parent.name.Contains("JumpWallPlatforms"))
+                    ? obs.transform.parent.position
+                    : obs.transform.position;
+
+            int barrierID = GetBarrierIDForPosition(barrierCenter);
+            allBarriers.Add(barrierID);
+
+            // Resetear estado del obstáculo para este intento
+            obs.ResetForNewAttempt();
+        }
+
+        Debug.Log($"[MULTITASK START] totalBarriers = {allBarriers.Count}");
+        Debug.Log($"[MULTITASK] Start Attempt {AttemptID}");
+
+        // ===============================
+        // Reset métricas ACUMULADAS
+        // (NO abre ni cierra laps)
+        // ===============================
         devSum = 0f;
         devSamples = 0;
 
-        // ---- Speed
         speedSum = 0f;
         speedSqSum = 0f;
         speedSamples = 0;
 
-        // ---- Micro-corrections
         microCorrectionsCount = 0;
         lastMoveDir = Vector3.zero;
         hasLastMoveDir = false;
 
-        // ---- Lap state
-        lapsCompleted = 0;
-        lapProgress01 = 0f;
-        deathOccurred = false;
-
-        // ---- Obstacles (SOLO HITS, no opportunities)
-        obstacleHits = 0;
-
-        // Resetear estado interno de cada obstáculo
-        foreach (var obs in FindObjectsOfType<ObstacleHitReporter>())
-        {
-            obs.ResetForNewAttempt();
-        }
+        // ⚠️ Importante:
+        // - lapStartTime se setea SOLO en OpenLap()
+        // - ResetLapMetrics() se llama SOLO al abrir una lap
     }
 
 
     public void EndAttempt(bool died)
     {
-        deathOccurred = died;
+        // Si hay una lap abierta, cerrarla
+        if (lapOpen)
+        {
+            CloseLap(died);
+        }
 
-        float duration = Time.time - attemptStartTime;
+        AttemptID++;
+        StartAttempt();
+    }
+
+
+
+
+
+
+    public Vector3 GetFlatVelocity()
+    {
+        return _flatVel;
+    }
+
+    // ======================================================
+    // BARRIER IDENTIFICATION (AUTOMÁTICO POR PATH)
+    // ======================================================
+
+    public int GetBarrierIDForPosition(Vector3 worldPos)
+    {
+        if (activePath == null)
+            return 0;
+
+        var reporters = FindObjectsOfType<ObstacleHitReporter>();
+        List<Vector3> centers = new List<Vector3>();
+
+        foreach (var obs in reporters)
+        {
+            Vector3 center =
+                (obs.transform.parent != null &&
+                 obs.transform.parent.name.Contains("JumpWallPlatforms"))
+                    ? obs.transform.parent.position
+                    : obs.transform.position;
+
+            if (!centers.Contains(center))
+                centers.Add(center);
+        }
+
+        // Ordenar las barreras según su progreso EN EL PATH ACTIVO
+        centers.Sort((a, b) =>
+            activePath.GetProgress01(a).CompareTo(activePath.GetProgress01(b)));
+
+        float p = activePath.GetProgress01(worldPos);
+
+        for (int i = 0; i < centers.Count; i++)
+        {
+            float cp = activePath.GetProgress01(centers[i]);
+            if (Mathf.Abs(cp - p) < 0.02f)
+                return i;
+        }
+
+        // fallback seguro
+        return Mathf.Clamp(
+            Mathf.RoundToInt(p * centers.Count),
+            0,
+            centers.Count - 1
+        );
+    }
+
+
+
+    public void NotifyBarrierHit(int barrierID)
+    {
+        hitBarriers.Add(barrierID);
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (lapOpen)
+        {
+            CloseLap(false);
+        }
+    }
+
+
+    private void EndLap(bool deathOccurred)
+    {
+        if (!lapOpen)
+            return;
+
+        lapOpen = false;
+
+        float lapDuration = Time.time - lapStartTime;
+        float attemptDuration = Time.time - attemptStartTime;
 
         float meanDev = devSamples > 0 ? devSum / devSamples : 0f;
 
@@ -202,20 +356,23 @@ public class MultitaskMetricsLogger : MonoBehaviour
             speedSD = Mathf.Sqrt(Mathf.Max(variance, 0f));
         }
 
-        float microRate = duration > 0f
-            ? microCorrectionsCount / duration
+        float microRate = lapDuration > 0f
+            ? microCorrectionsCount / lapDuration
             : 0f;
 
-        // 🔴 OBSTACLE HIT RATE
-        float obstacleHitRate = obstacleOpportunities > 0
-            ? (float)obstacleHits / obstacleOpportunities
+        int totalBarriers = allBarriers.Count;
+        int hitCount = hitBarriers.Count;
+
+        float obstacleHitRate = totalBarriers > 0
+            ? (float)hitCount / totalBarriers
             : 0f;
 
         string line =
             AttemptID + ";" +
-            duration.ToString("F3", CI) + ";" +
-            lapsCompleted + ";" +
-            lapProgress01.ToString("F3", CI) + ";" +
+            LapID + ";" +
+            lapDuration.ToString("F3", CI) + ";" +
+            attemptDuration.ToString("F3", CI) + ";" +
+            lapProgressMax01.ToString("F3", CI) + ";" +   // 🔴 NUEVO
             (deathOccurred ? 1 : 0) + ";" +
             meanDev.ToString("F4", CI) + ";" +
             speedSD.ToString("F4", CI) + ";" +
@@ -224,29 +381,76 @@ public class MultitaskMetricsLogger : MonoBehaviour
 
         File.AppendAllText(fullPath, line + "\n");
 
-        AttemptID++;
-        StartAttempt();
+        Debug.Log($"[MULTITASK] Attempt {AttemptID} | Lap {LapID} | death={deathOccurred}");
     }
-
-    public void NotifyLapCrossed()
+    private void ResetLapMetrics()
     {
-        lapsCompleted++;
+        devSum = 0f;
+        devSamples = 0;
+
+        speedSum = 0f;
+        speedSqSum = 0f;
+        speedSamples = 0;
+
+        microCorrectionsCount = 0;
+        lastMoveDir = Vector3.zero;
+        hasLastMoveDir = false;
+
+        hitBarriers.Clear();
+
         lapProgress01 = 0f;
-        Debug.Log("Lap crossed. Total laps: " + lapsCompleted);
-    }
-    public Vector3 GetFlatVelocity()
-    {
-        return _flatVel;
-    }
-    public void NotifyObstacleSpawned()
-    {
-        obstacleOpportunities++;
+        lapProgressMax01 = 0f;   // 🔴 NUEVO
     }
 
-    public void NotifyObstacleHit()
+    public void OpenLap()
     {
-        obstacleHits++;
+        // No abrir si ya hay una lap abierta
+        if (lapOpen)
+            return;
+
+        LapID++;
+        lapOpen = true;
+
+        lapStartTime = Time.time;
+        ResetLapMetrics();
+
+        Debug.Log($"[MULTITASK] Lap {LapID} STARTED");
+    }
+    public void CloseLap(bool deathOccurred)
+    {
+        if (!lapOpen)
+            return;
+
+        EndLap(deathOccurred);
+        lapOpen = false;
     }
 
+    private float NormalizeLapProgress(float rawProgress01)
+    {
+        if (lapCompletionFactor <= 0f)
+            return rawProgress01;
+
+        return Mathf.Clamp01(rawProgress01 / lapCompletionFactor);
+    }
+    private void UpdateActivePath(Vector3 playerPos)
+    {
+        activePath = null;
+        activePathDistance = float.MaxValue;
+
+        foreach (var p in paths)
+        {
+            if (p == null)
+                continue;
+
+            Vector3 closest = p.GetClosestPoint(playerPos);
+            float dist = Vector3.Distance(playerPos, closest);
+
+            if (dist < activePathDistance)
+            {
+                activePathDistance = dist;
+                activePath = p;
+            }
+        }
+    }
 
 }

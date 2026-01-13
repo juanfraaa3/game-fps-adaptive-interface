@@ -32,10 +32,6 @@ namespace Unity.FPS.Game
         bool _canGoDown;
 
         public static bool ElevatorIsMoving = false;
-        bool _transportingPlayer = false;
-
-        // 🆕 Offset exacto del jugador respecto al ascensor
-        private Vector3 _playerLocalOffset;
 
         public bool HasAlreadyUsed => _alreadyUsed;
 
@@ -87,18 +83,6 @@ namespace Unity.FPS.Game
 
                 ElevatorIsMoving = true;
                 Debug.Log("🔒 Inputs bloqueados (ascensor subiendo)");
-
-                // 🚀 Transporte seguro activado
-                _transportingPlayer = true;
-
-                // 🆕 Guardar el offset exacto del jugador
-                _playerLocalOffset = PlayerObject.transform.position - PlatformToMove.position;
-
-                if (PlayerController != null)
-                    PlayerController.enabled = false;
-
-                if (PlayerCollider != null)
-                    PlayerCollider.enabled = false;
             }
         }
 
@@ -132,38 +116,18 @@ namespace Unity.FPS.Game
                 float t = Mathf.Clamp01(_time / MoveDuration);
                 float e = Easing.Evaluate(t);
 
-                // Mover plataforma
                 PlatformToMove.position = Vector3.Lerp(PointA.position, PointB.position, e);
                 Physics.SyncTransforms();
 
-                // 🚀 Transporte seguro con offset exacto
-                if (_transportingPlayer && PlayerObject != null)
-                {
-                    Vector3 targetPos = PlatformToMove.position + _playerLocalOffset;
-
-                    // Altura mínima sobre el ascensor
-                    float minY = PlatformToMove.position.y + PlayerYOffset;
-
-                    // Si el offset Y original era mayor (por ejemplo porque el jugador estaba saltando),
-                    // lo respetamos.
-                    if (targetPos.y < minY)
-                        targetPos.y = minY;
-
-                    PlayerObject.transform.position = targetPos;
-
-                }
-
-                // Llegó arriba
                 if (t >= 1f)
                 {
                     _movingUp = false;
                     _time = 0f;
-                    OnReachedTop();
 
+                    OnReachedTop();
                     ElevatorIsMoving = false;
                 }
             }
-
             // BAJANDO
             else if (_movingDown && PointA != null && PointB != null)
             {
@@ -178,7 +142,6 @@ namespace Unity.FPS.Game
                 {
                     _movingDown = false;
                     _time = 0f;
-
                     ElevatorIsMoving = false;
                 }
             }
@@ -192,15 +155,6 @@ namespace Unity.FPS.Game
 
             EventManager.Broadcast(new ElevatorReachedTopEvent());
             Debug.Log("📢 Evento lanzado: Ascensor llegó al punto B");
-
-            // 🔓 FIN transporte seguro
-            _transportingPlayer = false;
-
-            if (PlayerController != null)
-                PlayerController.enabled = true;
-
-            if (PlayerCollider != null)
-                PlayerCollider.enabled = true;
         }
 
         IEnumerator EnableKillZoneAfterDelay()
@@ -229,15 +183,9 @@ namespace Unity.FPS.Game
             _canGoDown = false;
 
             ElevatorIsMoving = false;
-            _transportingPlayer = false;
-
-            if (PlayerController != null)
-                PlayerController.enabled = true;
-
-            if (PlayerCollider != null)
-                PlayerCollider.enabled = true;
         }
 
+        // ===== PARENTING SEGURO =====
         void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Player"))
