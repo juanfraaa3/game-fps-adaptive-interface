@@ -81,7 +81,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
 
         if (transform.position.y < SegmentEndHeight)
         {
-            Debug.Log($"[ORIENT-P1] 🔥 CORTANDO segmento por caída libre → Y={transform.position.y:F2} < {SegmentEndHeight:F2}");
+            //Debug.Log($"[ORIENT-P1] 🔥 CORTANDO segmento por caída libre → Y={transform.position.y:F2} < {SegmentEndHeight:F2}");
 
             MarkDeath();             // marcar que este salto terminó en muerte
             StopTrackingAndLog();    // cerrar el segmento YA MISMO

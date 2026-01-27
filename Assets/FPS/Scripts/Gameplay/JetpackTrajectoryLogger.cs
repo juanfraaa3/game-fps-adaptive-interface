@@ -78,7 +78,7 @@ namespace Unity.FPS.Gameplay
 
             if (_isTracking && transform.position.y < SegmentEndHeight)
             {
-                Debug.Log($"[TRAJ-P2] 🔥 CORTANDO segmento por caída → Y={transform.position.y:F2} < {SegmentEndHeight:F2}");
+                //Debug.Log($"[TRAJ-P2] 🔥 CORTANDO segmento por caída → Y={transform.position.y:F2} < {SegmentEndHeight:F2}");
 
                 _endedInDeath = true;     // este salto terminó en caída
                 StopAndCompute();         // cerrar el segmento inmediatamente

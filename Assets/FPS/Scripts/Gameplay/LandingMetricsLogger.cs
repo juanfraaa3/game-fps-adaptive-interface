@@ -145,7 +145,7 @@ public class LandingMetricsLogger : MonoBehaviour
         {
             _lastAirVerticalSpeed = PlayerController.LastVerticalSpeedBeforeGrounding;
 
-            Debug.Log($"[AIR] verticalSpeed = {_lastAirVerticalSpeed}");
+            //Debug.Log($"[AIR] verticalSpeed = {_lastAirVerticalSpeed}");
 
             RecordPreLandingSample(now);
 

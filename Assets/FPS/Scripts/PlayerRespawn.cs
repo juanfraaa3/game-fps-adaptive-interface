@@ -8,6 +8,7 @@ using System.IO;
 public class PlayerRespawn : MonoBehaviour
 {
     public JitterMetricsLogger jitterLogger;
+    public AdaptivePillarEvaluator adaptiveEvaluator;
 
     Health m_Health;
     CharacterController m_Controller;
@@ -75,6 +76,20 @@ public class PlayerRespawn : MonoBehaviour
         var orient = FindObjectOfType<JetpackOrientationMetrics>();
         if (orient != null)
             orient.MarkDeath();
+
+        // ===============================
+        // 🔵 ADAPTIVE SYSTEM — DECISIÓN AL RESPAWN
+        // ===============================
+        if (adaptiveEvaluator != null)
+        {
+            adaptiveEvaluator.EvaluateAtRespawn();
+            Debug.Log("[RESPAWN] AdaptivePillarEvaluator ejecutado");
+        }
+        else
+        {
+            Debug.LogWarning("[RESPAWN] AdaptivePillarEvaluator NO asignado");
+        }
+
 
         var landing = FindObjectOfType<LandingMetricsLogger>();
 

@@ -1,0 +1,3 @@
+AttemptID;SegmentId;TotalDuration_s;AverageAngle_deg;TimeLookingAway_s;PercentTimeLookingAway;ReorientationCount;EndedInDeath;TargetPlatform
+3;JetpackSegment_6;1.544706;146.5115;1.544706;1;0;1;TargetAnchor1
+4;JetpackSegment_7;2.710244;142.7055;2.710244;1;0;1;TargetAnchor1
