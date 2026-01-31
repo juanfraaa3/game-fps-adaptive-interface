@@ -43,7 +43,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
     string CsvSeparator = ";";
 
     // Ruta fija pedida por ti
-    string BasePath = @"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\JetpackSystem\JetpackLogs\";
+    string BasePath = @"C:\Users\juanf\OneDrive\Escritorio\OKOKOKOKOKOKrial-adaptative-unity-game\Assets\FPS\Scripts\JetpackSystem\JetpackLogs";
 
     void Awake()
     {
@@ -68,7 +68,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
             );
         }
 
-        Debug.Log("[JetpackMetrics] Created session log: " + fullPath);
+        //Debug.Log("[JetpackMetrics] Created session log: " + fullPath);
     }
 
 
@@ -161,7 +161,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
         // PERO solo evitamos loggear, no evitamos actualizar estado
         if (!EnableLogging)
         {
-            Debug.Log("[JetpackMetrics] StartTracking: logging DESACTIVADO, pero sí se actualizó targetPlatform.");
+            //Debug.Log("[JetpackMetrics] StartTracking: logging DESACTIVADO, pero sí se actualizó targetPlatform.");
             _isTracking = false;   // ← imprescindible
             return;
         }
@@ -177,7 +177,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
 
         _hasLastForward = false;
 
-        Debug.Log("[JetpackMetrics] START segment " + segmentId);
+        //Debug.Log("[JetpackMetrics] START segment " + segmentId);
     }
 
 
@@ -194,7 +194,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
 
         if (_angleSamples == 0)
         {
-            Debug.LogWarning("[JetpackMetrics] No data to log (no samples)");
+            //sDebug.LogWarning("[JetpackMetrics] No data to log (no samples)");
             return;
         }
 
@@ -203,7 +203,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
 
         WriteRowToCsv(_segmentId, _totalDuration, avgAngle, _timeLookingAway, percentAway, _reorientationCount);
 
-        Debug.Log("[JetpackMetrics] END segment " + _segmentId);
+        //Debug.Log("[JetpackMetrics] END segment " + _segmentId);
     }
 
     // ---------------------------------------------------------------
@@ -255,7 +255,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
             _endedInDeath = false;
         }
 
-        Debug.Log("[JetpackMetrics] Logged to file: " + fullPath);
+        //Debug.Log("[JetpackMetrics] Logged to file: " + fullPath);
     }
     public void MarkDeath()
     {

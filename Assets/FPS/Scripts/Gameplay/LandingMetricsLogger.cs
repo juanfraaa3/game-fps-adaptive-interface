@@ -246,7 +246,7 @@ public class LandingMetricsLogger : MonoBehaviour
         // ❌ Si venimos de una caída o resbalón, NO iniciar segmento nuevo
         if (_suppressNextSegment)
         {
-            Debug.Log("[LANDING] Segmento bloqueado por _suppressNextSegment (evita fantasma)");
+            //Debug.Log("[LANDING] Segmento bloqueado por _suppressNextSegment (evita fantasma)");
             _suppressNextSegment = false;   // se consume el bloqueo
             return;
         }
@@ -297,7 +297,7 @@ public class LandingMetricsLogger : MonoBehaviour
         _verticalSpeedAtImpact = _lastAirVerticalSpeed;
 
         // 🔥 LOG: velocidad registrada al momento del impacto
-        Debug.Log($"[LAND] impact vertical speed = {_verticalSpeedAtImpact}");
+        // Debug.Log($"[LAND] impact vertical speed = {_verticalSpeedAtImpact}");
 
         // 2) marcar aterrizaje
         _hasLanded = true;
@@ -359,6 +359,7 @@ public class LandingMetricsLogger : MonoBehaviour
 
                 if (fallingFast && belowSurface)
                 {
+                    /*
                     Debug.Log(
                         $"[LANDING][PostLandingFall] ACTIVADO\n" +
                         $"→ Motivo: caída REAL después de aterrizar\n" +
@@ -368,6 +369,7 @@ public class LandingMetricsLogger : MonoBehaviour
                         $"    gracePeriod = 0.20s | postLandingWindow = 2.0s\n" +
                         $"    DriftActual = {_postLandingDrift:F3}m"
                     );
+                    */
 
                     _postLandingFall = true;
                     _landingFailed = true;
@@ -392,6 +394,7 @@ public class LandingMetricsLogger : MonoBehaviour
                 _stabilized = true;
                 _postStabilizationTime = now - _landingTime;
 
+                /*
                 Debug.Log(
                     $"[LANDING][CLEAN LANDING]\n" +
                     $"→ Aterrizaje estable detectado\n" +
@@ -401,7 +404,7 @@ public class LandingMetricsLogger : MonoBehaviour
                     $"→ Grounded = {grounded}\n" +
                     $"→ LandingPosition = {_landingPosition}\n"
                 );
-
+                */
                 EndSegmentAndLog("CleanOrEdge");
                 ResetStateAfterSegment();
                 return;
@@ -420,6 +423,7 @@ public class LandingMetricsLogger : MonoBehaviour
         // Seguridad: si pasa demasiado tiempo post-landing, cerramos igual
         if (now - _postLandingStartTime >= MaxPostLandingDuration)
         {
+            /*
             Debug.Log(
                 $"[LANDING][LandingFailed - TIMEOUT]\n" +
                 $"→ Razón: No hubo estabilización ni caída dentro de {MaxPostLandingDuration} segundos.\n" +
@@ -429,7 +433,7 @@ public class LandingMetricsLogger : MonoBehaviour
                 $"→ PostLandingFall = {_postLandingFall}\n" +
                 $"→ HasLanded = {_hasLanded}\n"
             );
-
+            */
             if (!_stabilized)
             {
                 _postStabilizationTime = now - _landingTime;

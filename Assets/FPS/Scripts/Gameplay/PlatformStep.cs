@@ -13,9 +13,7 @@ public class PlatformStep : MonoBehaviour
             Jetpack jp = other.GetComponent<Jetpack>();
             if (jp != null && NextPlatform != null)
             {
-                Debug.Log(
-    $"[PLATFORM STEP] 🟢 Player ENTER {name} → NextTarget = {NextPlatform.name} | frame={Time.frameCount}"
-);
+                //Debug.Log($"[PLATFORM STEP] 🟢 Player ENTER {name} → NextTarget = {NextPlatform.name} | frame={Time.frameCount}");
                 jp.OrientationTargetPlatform = NextPlatform;
                 //Debug.Log("Nuevo objetivo: " + NextPlatform.name);
             }

@@ -17,7 +17,8 @@ namespace Unity.FPS.Gameplay
 
 
         [Header("CSV Output")]
-        public string OutputDirectory = @"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\JetpackSystem\Trajectory";
+        public string OutputDirectory = @"C:\Users\juanf\OneDrive\Escritorio\OKOKOKOKOKOKrial-adaptative-unity-game\Assets\FPS\Scripts\JetpackSystem\JetpackLogs";
+
         public string FileBaseName = "JetpackTrajectory";
         public char CsvSeparator = ';';
         [Header("Death cut-off")]
@@ -121,7 +122,7 @@ namespace Unity.FPS.Gameplay
             // -------------------------------------------------------------
             if (Time.time - LastRespawnTime < 0.20f)
             {
-                Debug.Log("[TRAJ] ❌ Segmento ignorado: muy cerca del respawn");
+                //Debug.Log("[TRAJ] ❌ Segmento ignorado: muy cerca del respawn");
                 return;
             }
 
@@ -251,7 +252,7 @@ namespace Unity.FPS.Gameplay
         void InitializeFile()
         {
             if (_fileInitialized) return;
-
+Debug.Log($"[TRAJ LOGGER] Using HARDCODED path: {OutputDirectory}");
             if (!Directory.Exists(OutputDirectory))
                 Directory.CreateDirectory(OutputDirectory);
 
@@ -299,7 +300,7 @@ namespace Unity.FPS.Gameplay
             // 1) Segmento demasiado corto → ruido del juego
             if (duration < 0.10f)
             {
-                Debug.Log($"[TRAJ] ❌ Descartado (duración muy baja = {duration:F3}s)");
+                //Debug.Log($"[TRAJ] ❌ Descartado (duración muy baja = {duration:F3}s)");
                 _endedInDeath = false;
                 return;
             }
@@ -307,7 +308,7 @@ namespace Unity.FPS.Gameplay
             // 2) Segmento que terminó en "muerte" pero sin distancia recorrida
             if (_endedInDeath && totalDistance < 0.10f)
             {
-                Debug.Log("[TRAJ] ❌ Descartado (muerte técnica / caída inmediata sin vuelo real)");
+                //Debug.Log("[TRAJ] ❌ Descartado (muerte técnica / caída inmediata sin vuelo real)");
                 _endedInDeath = false;
                 return;
             }

@@ -8,7 +8,8 @@ using System.IO;
 public class PlayerRespawn : MonoBehaviour
 {
     public JitterMetricsLogger jitterLogger;
-    public AdaptivePillarEvaluator adaptiveEvaluator;
+    //public AdaptivePillarEvaluator adaptiveEvaluator;
+    public TrajectoryAttemptBuffer trajectoryBuffer;
 
     Health m_Health;
     CharacterController m_Controller;
@@ -37,6 +38,8 @@ public class PlayerRespawn : MonoBehaviour
 
     void RespawnAtCheckpoint()
     {
+        if (trajectoryBuffer != null)
+            trajectoryBuffer.OnPlayerDied();
         // === Registrar DEATH en ObstacleGateMetrics CSV ===
         if (!string.IsNullOrEmpty(ObstacleGateMetricsRework.ActiveGateCsvPath))
         {
@@ -80,16 +83,16 @@ public class PlayerRespawn : MonoBehaviour
         // ===============================
         // 🔵 ADAPTIVE SYSTEM — DECISIÓN AL RESPAWN
         // ===============================
-        if (adaptiveEvaluator != null)
+        /*if (adaptiveEvaluator != null)
         {
             adaptiveEvaluator.EvaluateAtRespawn();
-            Debug.Log("[RESPAWN] AdaptivePillarEvaluator ejecutado");
+            //sebug.Log("[RESPAWN] AdaptivePillarEvaluator ejecutado");
         }
         else
         {
-            Debug.LogWarning("[RESPAWN] AdaptivePillarEvaluator NO asignado");
+            //Debug.LogWarning("[RESPAWN] AdaptivePillarEvaluator NO asignado");
         }
-
+        */
 
         var landing = FindObjectOfType<LandingMetricsLogger>();
 
@@ -213,6 +216,9 @@ public class PlayerRespawn : MonoBehaviour
 
         // 🔹 Restaurar salud
         m_Health.Heal(m_Health.MaxHealth);
+        // 🧠 TRAJECTORY — comenzar nuevo intento
+        if (trajectoryBuffer != null)
+            trajectoryBuffer.OnPlayerRespawned();
 
         // 🔹 Resetear las animaciones de la cámara y el arma (si está en ADS)
         ResetWeaponAndCamera();
