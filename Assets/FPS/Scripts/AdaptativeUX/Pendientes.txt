@@ -1,0 +1,34 @@
+[] Pillar 0 - Orientation
+	[X] Pulso visual en la plataforma objetivo
+	[X] Anillo de alineación alrededor de la mira (o vibración angular)
+	[] Sistema de ayuda progresiva que se apaga solo
+[] Pillar 1 - Trajectory
+	[X] Visualización de la trayectoria real del jugador (Pasada)
+	[] 
+	[] Sistema adaptativo (Sistema de ayuda progresiva que se apaga solo)
+[] Pillar 2 - Landing
+	[X] Feedback de cámara según calidad de la entrada (limpia vs brusca)
+	[]
+	[] Sistema progresivo de ayudas de aterrizaje que se apagan solas
+[] Pillar 3 - Movement
+	[] 
+	[]
+	[] Sistema progresivo de ayudas de aterrizaje que se apagan solas
+[] Pillar 4 - Obstacles
+	[]
+	[]
+	[]
+[] Pillar 5 - Jitter
+	[X] Termómetro de estabilidad del apuntado
+	[X] Huella de corrección del apuntado (micro-estela)
+	[X] Radar superior de orientación contextual (ENEMIGOS)
+	[X] Feedback visual de riesgo vital (pantalla roja pulsante)
+	[] Sistema progresivo de ayudas de aterrizaje que se apagan solas
+[] Pillar 6 - Multitasking
+	[]
+	[]
+	[]
+[] Pillar X - Feel & Emotive
+	[X] Mixer de audio adpatativo
+	[]
+	[]

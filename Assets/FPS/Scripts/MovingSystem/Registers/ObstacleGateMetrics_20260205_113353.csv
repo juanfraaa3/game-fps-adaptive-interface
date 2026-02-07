@@ -1,0 +1,7 @@
+EventType;AttemptID;SegmentID;GateID;EntryTime;ExitTime;TimeToClear_s;Cleared;ObstacleTouched;ContactDuration_s;ContactCount;FirstContactTime_s;JetpackActiveTime_s;CrouchTime_s;AirborneTime_s;ContactX;ContactY;ContactZ
+GATE;1;1;1;5.4400;7.1800;1.7400;1;1;0.1800;3;0.8800;0.0000;1.7302;0.0000;0;0;0
+GATE;2;2;2;12.3600;12.7000;0.3400;1;0;0.0000;0;-1.0000;0.0000;0.0000;0.3425;0;0;0
+DEATH;;;;;;;;;;;;;
+GATE;1;1;1;18.5000;20.1600;1.6600;1;1;0.2200;3;0.7600;0.0000;1.6775;0.0000;0;0;0
+GATE;2;2;2;23.3600;25.0600;1.7000;1;1;0.2400;3;0.7600;0.0000;1.6069;0.0000;0;0;0
+GATE;3;3;3;27.0800;29.0600;1.9800;1;1;0.2000;3;0.7800;0.0000;1.4476;0.5381;0;0;0
