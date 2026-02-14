@@ -1,0 +1,1 @@
+AttemptID;RetryNumber;WaveNumber;Death;CurrentJitter;SmoothedJitter;IsHard;JitterPeak;JitterVariance;JitterStdDev;JitterEvents;OvershootCount;JitterArea;JitterDirectionBias;JitterClusters

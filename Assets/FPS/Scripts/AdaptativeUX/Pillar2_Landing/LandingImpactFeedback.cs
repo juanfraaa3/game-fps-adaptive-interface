@@ -93,9 +93,7 @@ public class LandingImpactFeedback : MonoBehaviour
     {
 
         float verticalDownSpeed = Mathf.Max(0f, -velocity.y);
-        Debug.Log(
-            $"[ON LANDING] raw verticalDownSpeed={verticalDownSpeed:F2}"
-        );
+        //Debug.Log($"[ON LANDING] raw verticalDownSpeed={verticalDownSpeed:F2}");
 
         // MISMA NORMALIZACIÓN QUE EL DAÑO
         float severity = Mathf.InverseLerp(

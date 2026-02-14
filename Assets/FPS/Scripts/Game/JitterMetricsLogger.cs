@@ -128,7 +128,8 @@ namespace Unity.FPS.Game
 
             // 🔥 Time-to-target
             //ProcessTargetMetrics();
-            if (!Input.GetButton("Aim"))
+            float aimValue = Input.GetAxis("Aim");
+            if (aimValue < 0.3f)
                 return;
             // ============================================================
             // Tu sistema actual de jitter (no se toca)

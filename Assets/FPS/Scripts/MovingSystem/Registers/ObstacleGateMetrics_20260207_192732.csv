@@ -1,0 +1,4 @@
+EventType;AttemptID;SegmentID;GateID;EntryTime;ExitTime;TimeToClear_s;Cleared;ObstacleTouched;ContactDuration_s;ContactCount;FirstContactTime_s;JetpackActiveTime_s;CrouchTime_s;AirborneTime_s;ContactX;ContactY;ContactZ
+GATE;1;1;1;22.5800;24.2800;1.7000;1;1;0.2000;2;0.7600;0.0000;1.1054;0.0000;0;0;0
+GATE;2;2;2;27.7600;29.4800;1.7200;1;1;0.2200;3;0.7600;0.0000;1.2143;0.0000;0;0;0
+GATE;3;3;3;31.4800;33.4400;1.9600;1;1;0.2000;3;0.7600;0.0995;1.0534;0.4909;0;0;0

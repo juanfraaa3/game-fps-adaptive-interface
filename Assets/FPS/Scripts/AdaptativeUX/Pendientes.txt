@@ -8,14 +8,15 @@
 	[] Sistema adaptativo (Sistema de ayuda progresiva que se apaga solo)
 [] Pillar 2 - Landing
 	[X] Feedback de cámara según calidad de la entrada (limpia vs brusca)
-	[]
+	[X] Feedback auditivo
+	[] Mancha o limpio segun como aterrizo.
 	[] Sistema progresivo de ayudas de aterrizaje que se apagan solas
 [] Pillar 3 - Movement
-	[] 
-	[]
+	[] Giro de Camara por inestabilidad
+	[X] Piso aspero/suave
 	[] Sistema progresivo de ayudas de aterrizaje que se apagan solas
 [] Pillar 4 - Obstacles
-	[]
+	[] 
 	[]
 	[]
 [] Pillar 5 - Jitter
@@ -25,8 +26,7 @@
 	[X] Feedback visual de riesgo vital (pantalla roja pulsante)
 	[] Sistema progresivo de ayudas de aterrizaje que se apagan solas
 [] Pillar 6 - Multitasking
-	[]
-	[]
+	[] Modificador de velocidad de musica para cuando jugador colapsa
 	[]
 [] Pillar X - Feel & Emotive
 	[X] Mixer de audio adpatativo

@@ -17,7 +17,7 @@ namespace Unity.FPS.Gameplay
 
 
         [Header("CSV Output")]
-        public string OutputDirectory = @"C:\Users\juanf\OneDrive\Escritorio\OKOKOKOKOKOKrial-adaptative-unity-game\Assets\FPS\Scripts\JetpackSystem\JetpackLogs";
+        public string OutputDirectory = @"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\JetpackSystem\JetpackLogs";
 
         public string FileBaseName = "JetpackTrajectory";
         public char CsvSeparator = ';';
@@ -252,7 +252,7 @@ namespace Unity.FPS.Gameplay
         void InitializeFile()
         {
             if (_fileInitialized) return;
-Debug.Log($"[TRAJ LOGGER] Using HARDCODED path: {OutputDirectory}");
+            Debug.Log($"[TRAJ LOGGER] Using HARDCODED path: {OutputDirectory}");
             if (!Directory.Exists(OutputDirectory))
                 Directory.CreateDirectory(OutputDirectory);
 

@@ -1,0 +1,13 @@
+AttemptID;SegmentId;TotalDuration_s;AverageAngle_deg;TimeLookingAway_s;PercentTimeLookingAway;ReorientationCount;EndedInDeath;TargetPlatform
+6;JetpackSegment_27;1.145066;29.0175;0.5612065;0.4901082;0;0;TargetAnchor1
+6;JetpackSegment_28;1.475886;39.69421;0.916091;0.6207057;0;0;TargetAnchor2
+6;JetpackSegment_29;1.141662;30.12482;0.5173087;0.4531188;0;0;TargetAnchor3
+6;JetpackSegment_30;2.44975;56.47467;1.802208;0.73567;0;1;TargetAnchor4
+7;JetpackSegment_31;1.5917;34.96486;0.9041092;0.568015;0;0;TargetAnchor1
+7;JetpackSegment_32;0.8688743;25.5302;0.2572773;0.2961042;0;0;TargetAnchor2
+7;JetpackSegment_33;1.025192;38.41597;0.6963714;0.6792592;0;0;TargetAnchor3
+7;JetpackSegment_34;1.593589;35.37707;1.03648;0.6504063;0;0;TargetAnchor4
+7;JetpackSegment_35;1.455038;30.86498;0.8178166;0.5620585;0;0;TargetAnchor5
+7;JetpackSegment_36;1.50893;35.42895;0.9193335;0.6092619;0;0;TargetAnchor6
+7;JetpackSegment_37;1.590115;46.37529;1.157663;0.7280374;0;0;TargetAnchor7
+7;JetpackSegment_38;1.479761;79.27034;1.479761;1;0;0;TargetAnchor8

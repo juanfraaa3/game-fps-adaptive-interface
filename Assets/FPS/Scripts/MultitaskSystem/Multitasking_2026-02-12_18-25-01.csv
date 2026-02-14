@@ -1,0 +1,4 @@
+AttemptID;LapID;LapDuration_s;AttemptDuration_s;LapProgress_0_1;DeathOccurred;MeanDeviation_m;SpeedSD_mps;MicroCorrectionsRate_per_s;ObstacleHitRate
+4;1;14.390;51.263;0.554;1;7.2509;2.5932;3.0577;0.077
+5;1;22.721;31.071;0.740;1;8.3571;4.8002;6.9099;0.231
+6;1;25.240;40.899;1.000;0;7.8983;4.4537;7.7258;0.231

@@ -83,7 +83,7 @@ namespace Unity.FPS.Game
 
             if (!SensitivityComponent)
             {
-                Debug.LogWarning("[CamSensAssist] Asigna SensitivityComponent en el Inspector.");
+                //Debug.LogWarning("[CamSensAssist] Asigna SensitivityComponent en el Inspector.");
                 return;
             }
 
@@ -119,12 +119,12 @@ namespace Unity.FPS.Game
             else if (_prop != null) _baseSensitivity = (float)_prop.GetValue(SensitivityComponent);
             else
             {
-                Debug.LogWarning($"[CamSensAssist] No encontré float '{(string.IsNullOrEmpty(SensitivityMemberName) ? "(auto)" : SensitivityMemberName)}' en {t.Name}.", SensitivityComponent);
+                //Debug.LogWarning($"[CamSensAssist] No encontré float '{(string.IsNullOrEmpty(SensitivityMemberName) ? "(auto)" : SensitivityMemberName)}' en {t.Name}.", SensitivityComponent);
                 _baseSensitivity = 1f;
             }
 
             _cached = true;
-            if (LogDebug) Debug.Log($"[CamSensAssist] Base={_baseSensitivity} en {t.Name}.{(string.IsNullOrEmpty(name) ? "?" : name)}");
+            //if (LogDebug) Debug.Log($"[CamSensAssist] Base={_baseSensitivity} en {t.Name}.{(string.IsNullOrEmpty(name) ? "?" : name)}");
         }
 
         void Update()
@@ -139,7 +139,7 @@ namespace Unity.FPS.Game
                 if (_lastCheckpoint == StartCheckpointId && ResetWhenEnteringSection)
                 {
                     ResetSection();
-                    if (LogDebug) Debug.Log("[CamSensAssist] Entraste a la sección. Reset.");
+                    //if (LogDebug) Debug.Log("[CamSensAssist] Entraste a la sección. Reset.");
                 }
 
                 // Completó la sección
@@ -148,7 +148,7 @@ namespace Unity.FPS.Game
                     if (RevertWhenSectionCompleted)
                     {
                         Revert();
-                        if (LogDebug) Debug.Log("[CamSensAssist] Sección completada. Revert.");
+                        //if (LogDebug) Debug.Log("[CamSensAssist] Sección completada. Revert.");
                     }
                 }
             }
@@ -164,7 +164,7 @@ namespace Unity.FPS.Game
             if (!InsideSection()) return;
 
             _deathsInSection++;
-            if (LogDebug) Debug.Log($"[CamSensAssist] Muerte #{_deathsInSection}.");
+            //if (LogDebug) Debug.Log($"[CamSensAssist] Muerte #{_deathsInSection}.");
 
             SensRule toApply = null;
             foreach (var r in Rules)
@@ -177,7 +177,7 @@ namespace Unity.FPS.Game
             SetSensitivity(_baseSensitivity * m);
 
             toApply.Applied = true;
-            if (LogDebug) Debug.Log($"[CamSensAssist] Sens = base({_baseSensitivity}) x {m}.");
+            //if (LogDebug) Debug.Log($"[CamSensAssist] Sens = base({_baseSensitivity}) x {m}.");
         }
 
         void SetSensitivity(float value)

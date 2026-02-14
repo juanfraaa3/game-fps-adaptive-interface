@@ -43,7 +43,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
     string CsvSeparator = ";";
 
     // Ruta fija pedida por ti
-    string BasePath = @"C:\Users\juanf\OneDrive\Escritorio\OKOKOKOKOKOKrial-adaptative-unity-game\Assets\FPS\Scripts\JetpackSystem\JetpackLogs";
+    string BasePath = @"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\JetpackSystem\JetpackLogs";
 
     void Awake()
     {

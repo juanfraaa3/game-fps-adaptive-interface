@@ -7,7 +7,7 @@ import re
 # CONFIGURACION GENERAL
 # =====================================================
 
-BASE_PATH = r"C:\Users\juanf\OneDrive\Escritorio\OKOKOKOKOKOKrial-adaptative-unity-game\Assets\FPS\Scripts"
+BASE_PATH = r"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts"
 
 SYSTEM_CONFIG = {
     "Orientation": {"path": "JetpackSystem/JetpackLogs", "decimal": "."},
@@ -20,7 +20,7 @@ SYSTEM_CONFIG = {
 MOVING_REGISTERS_PATH = r"MovingSystem\Registers"
 ANALYTICS_REGISTERS_PATH = r"Analytics\Registers"
 
-PARTICIPANTS_BASE_FOLDER = r"C:\Users\juanf\OneDrive\Escritorio\OKOKOKOKOKOKrial-adaptative-unity-game\Assets\FPS\Scripts\RegistersPerName"
+PARTICIPANTS_BASE_FOLDER = r"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\RegistersPerName"
 
 # =====================================================
 # UTILIDADES

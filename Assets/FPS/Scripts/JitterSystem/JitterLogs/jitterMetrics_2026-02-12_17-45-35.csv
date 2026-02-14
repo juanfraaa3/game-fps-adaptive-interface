@@ -1,0 +1,2 @@
+AttemptID;RetryNumber;WaveNumber;Death;CurrentJitter;SmoothedJitter;IsHard;JitterPeak;JitterVariance;JitterStdDev;JitterEvents;OvershootCount;JitterArea;JitterDirectionBias;JitterClusters
+TimeToTargetHit;0;Enemy1_Wave0_BOT_rotador;3.0713
