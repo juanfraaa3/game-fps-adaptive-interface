@@ -42,6 +42,9 @@ public class StabilityBandController : MonoBehaviour
     public float instabilityLerp = 4f;
     public float CurrentInstability01 => currentInstability;
 
+    [Header("Adaptive")]
+    public MovementAdaptiveEvaluator adaptiveEvaluator;
+
     // ================= INTERNAL =================
 
     class Sample
@@ -158,6 +161,11 @@ public class StabilityBandController : MonoBehaviour
 
         // ================= FLOOR INSTABILITY =================
         float instability01 = Mathf.InverseLerp(stdOff, stdOn, stdLateral);
+
+        if (adaptiveEvaluator != null)
+        {
+            instability01 *= adaptiveEvaluator.MovementAssistWeight01;
+        }
 
         currentInstability = Mathf.Lerp(
             currentInstability,

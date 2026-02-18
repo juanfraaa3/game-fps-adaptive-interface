@@ -4,6 +4,13 @@ using Unity.FPS.Game;
 
 public class Checkpoint : MonoBehaviour
 {
+    [Header("Adaptive Activation (Optional)")]
+    public bool activateAdaptiveMusic = false;
+    public MultitaskPitchController pitchController;
+    [Header("Disable Any Adaptive System (Optional)")]
+    public bool disableAdaptiveSystem = false;
+    public Behaviour adaptiveSystemToDisable;
+
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -16,6 +23,18 @@ public class Checkpoint : MonoBehaviour
             }
 
             //Debug.Log("Checkpoint activado en: " + transform.position);
+            // NUEVO BLOQUE
+            if (activateAdaptiveMusic && pitchController != null)
+            {
+                pitchController.ActivateAdaptiveMusic();
+                Debug.Log("Adaptive Music Activated from checkpoint.");
+            }
+            if (disableAdaptiveSystem && adaptiveSystemToDisable != null)
+            {
+                adaptiveSystemToDisable.enabled = false;
+                Debug.Log("Adaptive system disabled from checkpoint.");
+            }
+
         }
     }
 

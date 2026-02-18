@@ -23,6 +23,11 @@ namespace Unity.FPS.Game
         [Header("Activation")]
         public bool loggingActive = false;
 
+        [Header("Aim Detection")]
+        public string AimAxisName = "Aim";
+        public string AimButtonName = "Aim";
+        public float AimThreshold = 0.3f;
+
         private List<float> jitterSamples = new List<float>();
         private List<float> smoothSamples = new List<float>();
 
@@ -128,9 +133,24 @@ namespace Unity.FPS.Game
 
             // 🔥 Time-to-target
             //ProcessTargetMetrics();
-            float aimValue = Input.GetAxis("Aim");
-            if (aimValue < 0.3f)
+            // ============================================================
+            // AIM CHECK (Xbox / PS4 compatible)
+            // ============================================================
+
+            float aimAxis = 0f;
+
+            if (!string.IsNullOrEmpty(AimAxisName))
+                aimAxis = Mathf.Abs(Input.GetAxis(AimAxisName));
+
+            bool aimButton = false;
+
+            if (!string.IsNullOrEmpty(AimButtonName))
+                aimButton = Input.GetButton(AimButtonName);
+
+            // Si no está aimiando, no procesamos jitter
+            if (aimAxis < AimThreshold && !aimButton)
                 return;
+
             // ============================================================
             // Tu sistema actual de jitter (no se toca)
             // ============================================================

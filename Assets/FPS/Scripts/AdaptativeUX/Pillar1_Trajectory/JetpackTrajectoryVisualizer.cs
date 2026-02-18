@@ -48,7 +48,7 @@ public class JetpackTrajectoryVisualizer : MonoBehaviour
     {
         points.Clear();
         line.positionCount = 0;
-        line.enabled = true;
+        line.enabled = false;
         isActive = true;
     }
 

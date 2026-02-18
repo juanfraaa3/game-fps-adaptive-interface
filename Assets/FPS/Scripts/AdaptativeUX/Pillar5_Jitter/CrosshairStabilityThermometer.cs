@@ -10,25 +10,34 @@ public class CrosshairStabilityThermometer : MonoBehaviour
     [Range(0f, 1f)]
     public float targetStability = 1f;  // 1 = estable, 0 = inestable (debug por ahora)
 
+    [Header("Adaptive")]
+    public JitterAdaptiveEvaluator Evaluator;
+
     [Header("Smoothing")]
     [Tooltip("Seconds to smooth changes in stability (prevents sudden jumps).")]
     public float stabilitySmoothTime = 0.25f;
 
     [Header("Jitter Motion")]
     [Tooltip("Max pixel offset when completely unstable (stability=0). Keep small.")]
-    public float maxJitterPixels = 12f;
+    public float maxJitterPixels = 28f;
 
     [Tooltip("How fast the jitter changes (Hz-ish).")]
-    public float jitterSpeed = 18f;
+    public float jitterSpeed = 32f;
 
     [Header("Pulse (optional)")]
     [Tooltip("Scale pulse at instability. 0.06 = 6% max scale up.")]
-    public float pulseScaleAmount = 0.06f;
+    public float pulseScaleAmount = 0.18f;
 
     [Tooltip("Pulse speed.")]
     public float pulseSpeed = 3.5f;
+    [Header("Aim Filter")]
+    public float AimActivationThreshold = 0.3f;
 
     [Header("Debug")]
+    [Header("Aim Gating")]
+    public bool requireAimToActivate = true;
+    public float aimAxisThreshold = 0.3f;
+
     public bool debugKeys = true;
     public KeyCode setStableKey = KeyCode.Alpha1;     // stability = 1
     public KeyCode setUnstableKey = KeyCode.Alpha2;   // stability = 0
@@ -53,6 +62,32 @@ public class CrosshairStabilityThermometer : MonoBehaviour
 
     void Update()
     {
+        // ----------------------------------------------------
+        // AIM FILTER (PS4 + Xbox compatible)
+        // ----------------------------------------------------
+        if (requireAimToActivate)
+        {
+            float aimAxis = Input.GetAxis("Aim");
+            bool aimButton = Input.GetButton("Aim");
+            bool ps4L2 = Input.GetKey(KeyCode.JoystickButton6);
+            bool xboxLT = Input.GetKey(KeyCode.JoystickButton7);
+
+            bool isAiming =
+                aimAxis > aimAxisThreshold ||
+                aimButton ||
+                ps4L2 ||
+                xboxLT;
+
+            if (!isAiming)
+            {
+                // Restaurar estado estable
+                crosshairVisual.anchoredPosition = _baseAnchoredPos;
+                crosshairVisual.localScale = _baseLocalScale;
+                return;
+            }
+        }
+
+
         // Debug quick-test without any adaptive logic
         if (debugKeys)
         {
@@ -60,6 +95,19 @@ public class CrosshairStabilityThermometer : MonoBehaviour
             if (Input.GetKeyDown(setUnstableKey)) targetStability = 0f;
             if (Input.GetKeyDown(setMidKey)) targetStability = 0.5f;
         }
+        // =======================================
+        // ADAPTIVE INPUT (reemplaza debug real)
+        // =======================================
+        if (Evaluator != null)
+        {
+            float weight = Evaluator.JitterAssistWeight01;
+
+            if (weight <= 0f)
+                targetStability = 1f; // totalmente estable
+            else
+                targetStability = 1f - weight;
+        }
+
 
         targetStability = Mathf.Clamp01(targetStability);
 

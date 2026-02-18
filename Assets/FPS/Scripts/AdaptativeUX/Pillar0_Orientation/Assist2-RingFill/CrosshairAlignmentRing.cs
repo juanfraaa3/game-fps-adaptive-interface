@@ -9,6 +9,9 @@ public class CrosshairAlignmentRing : MonoBehaviour
     public Camera PlayerCamera;
     public Image RingImage;
 
+    [Header("Adaptive")]
+    public OrientationAdaptiveEvaluator Evaluator;
+
     [Header("Angle thresholds (deg)")]
     public float MaxErrorDeg = 30f;   // Muy mal alineado
     public float GoodAlignDeg = 5f;   // Casi alineado
@@ -48,6 +51,22 @@ public class CrosshairAlignmentRing : MonoBehaviour
         if (Jetpack == null || PlayerCamera == null || RingImage == null)
             return;
 
+        // ===============================
+        // Adaptive Weight (sin mínimo)
+        // ===============================
+        float assistWeight = 0f;
+
+        if (Evaluator != null)
+            assistWeight = Evaluator.OrientationAssistWeight01;
+
+        // Si no hay asistencia activa, ocultar completamente
+        if (assistWeight <= 0f)
+        {
+            RingImage.enabled = false;
+            return;
+        }
+        // ===============================
+
         Transform target = Jetpack.OrientationTargetPlatform;
 
         // Sin objetivo => ocultar
@@ -73,7 +92,7 @@ public class CrosshairAlignmentRing : MonoBehaviour
             RingImage.fillAmount = 1f;
 
             Color pc = PerfectColor;
-            pc.a = 0.9f;
+            pc.a = 0.9f * assistWeight;
             RingImage.color = pc;
 
             if (_ringRect != null)
@@ -101,15 +120,23 @@ public class CrosshairAlignmentRing : MonoBehaviour
 
         // ===== COLOR ROJO / NORMAL SEGÚN "30%" =====
         if (t <= RedThreshold)
-            RingImage.color = BadAlignColor;
+        {
+            Color red = Color.Lerp(NormalColor, BadAlignColor, assistWeight);
+            RingImage.color = red;
+        }
         else
+        {
             RingImage.color = NormalColor;
+        }
         // ==========================================
 
-        // Opacidad proporcional al error
-        Color c = RingImage.color;
-        float alpha = Mathf.Lerp(0.25f, 0.9f,
+        // Opacidad proporcional al error + adaptativa
+        float baseAlpha = Mathf.Lerp(0.25f, 0.9f,
             Mathf.InverseLerp(GoodAlignDeg, MaxErrorDeg, errorDeg));
+
+        float alpha = baseAlpha * assistWeight;
+
+        Color c = RingImage.color;
         c.a = alpha;
         RingImage.color = c;
     }

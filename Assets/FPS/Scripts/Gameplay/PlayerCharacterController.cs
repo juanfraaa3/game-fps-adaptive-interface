@@ -186,6 +186,10 @@ namespace Unity.FPS.Gameplay
 
         void Update()
         {
+            Debug.Log("IsGrounded: " + IsGrounded +
+          " | Controller.isGrounded: " + m_Controller.isGrounded +
+          " | CollisionFlags: " + m_Controller.collisionFlags);
+
             // check for Y kill
             if (!IsDead && transform.position.y < KillHeight)
             {

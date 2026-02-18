@@ -596,6 +596,15 @@ public class LandingMetricsLogger : MonoBehaviour
             offsetSide,
             targetName
         );
+        var evaluator = GetComponent<LandingAdaptiveEvaluator>();
+        if (evaluator != null)
+        {
+            evaluator.Evaluate(
+                landingOffset,
+                postDrift,
+                verticalSpeed
+            );
+        }
 
 
         // ---------------- LOG CSV ----------------

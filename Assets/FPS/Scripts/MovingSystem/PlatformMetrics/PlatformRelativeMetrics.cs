@@ -159,6 +159,18 @@ public class MovingPlatformRelativeMetrics : MonoBehaviour
         }
 
         float std = Mathf.Sqrt(variance / n);
+        // ================= ADAPTIVE EVALUATION =================
+        var evaluator = FindObjectOfType<MovementAdaptiveEvaluator>();
+        if (evaluator != null)
+        {
+            evaluator.Evaluate(
+                std,
+                edgeRiskTime,
+                timeOnPlatform,
+                correctionPeaks,
+                rawCorrectionsCount
+            );
+        }
 
         string header =
             "EventType;SegmentID;ElementID;" +

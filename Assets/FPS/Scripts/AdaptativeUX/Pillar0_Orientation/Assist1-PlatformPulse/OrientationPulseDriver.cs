@@ -12,6 +12,7 @@ public class OrientationPulseDriver : MonoBehaviour
     public float GoodAlignDeg = 5f;
 
     TargetPlatformPulse _activePulse;
+    public OrientationAdaptiveEvaluator Evaluator;
 
     void Update()
     {
@@ -58,7 +59,8 @@ public class OrientationPulseDriver : MonoBehaviour
             float intensity =
                 Mathf.InverseLerp(MaxErrorDeg, GoodAlignDeg, errorDeg);
 
-            pulse.SetIntensity(intensity);
+            pulse.SetIntensity(intensity * Evaluator.OrientationAssistWeight01);
+
             _activePulse = pulse;
         }
         else

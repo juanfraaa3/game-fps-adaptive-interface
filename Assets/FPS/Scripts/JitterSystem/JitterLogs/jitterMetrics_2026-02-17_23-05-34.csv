@@ -1,0 +1,6 @@
+AttemptID;RetryNumber;WaveNumber;Death;CurrentJitter;SmoothedJitter;IsHard;JitterPeak;JitterVariance;JitterStdDev;JitterEvents;OvershootCount;JitterArea;JitterDirectionBias;JitterClusters
+WaveFailTime;0;25.3108
+WaveFailTime;0;32.4352
+WaveFailTime;0;50.5373
+WaveFailTime;0;57.4135
+WaveFailTime;0;63.9337

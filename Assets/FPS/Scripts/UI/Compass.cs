@@ -22,8 +22,11 @@ namespace Unity.FPS.UI
         public Image ArrowBehindRight;
 
         [Header("Pulse Settings (Option B)")]
-        public float PulseSpeed = 3f;      // Ritmo del “latido”
-        public float PulseScale = 0.5f;    // Cuánto se agranda hacia 1.5X (0.5 = +50%)
+        public float PulseSpeed = 6f;      // antes 3
+        public float PulseScale = 0.9f;    // antes 0.5
+
+        [Header("Adaptive")]
+        public JitterAdaptiveEvaluator Evaluator;
 
         Transform m_PlayerTransform;
         Dictionary<Transform, CompassMarker> m_ElementsDictionnary = new Dictionary<Transform, CompassMarker>();
@@ -46,6 +49,25 @@ namespace Unity.FPS.UI
 
         void Update()
         {
+            Debug.Log("Aim axis = " + Input.GetAxis("Aim"));
+
+            // =======================================
+            // ADAPTIVE CONTROL
+            // =======================================
+            if (Evaluator != null)
+            {
+                float weight = Evaluator.JitterAssistWeight01;
+
+                if (weight <= 0f)
+                {
+                    PulseScale = 0.2f;
+                }
+                else
+                {
+                    PulseScale = Mathf.Lerp(0.2f, 0.8f, weight);
+                }
+            }
+
             bool enemyBehindLeft = false;
             bool enemyBehindRight = false;
 

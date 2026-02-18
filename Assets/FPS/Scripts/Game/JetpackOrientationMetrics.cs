@@ -201,6 +201,15 @@ public class JetpackOrientationMetrics : MonoBehaviour
         float avgAngle = _sumAngles / _angleSamples;
         float percentAway = _timeLookingAway / _totalDuration;
 
+        OnSegmentEvaluated?.Invoke(
+            _totalDuration,
+            avgAngle,
+            _timeLookingAway,
+            percentAway,
+            _endedInDeath ? 1 : 0
+        );
+
+
         WriteRowToCsv(_segmentId, _totalDuration, avgAngle, _timeLookingAway, percentAway, _reorientationCount);
 
         //Debug.Log("[JetpackMetrics] END segment " + _segmentId);
@@ -209,6 +218,7 @@ public class JetpackOrientationMetrics : MonoBehaviour
     // ---------------------------------------------------------------
     // Escritura en CSV en TU carpeta fija
     // ---------------------------------------------------------------
+    public System.Action<float, float, float, float, int> OnSegmentEvaluated;
     void WriteRowToCsv(string segmentId,
                        float totalDuration,
                        float avgAngle,

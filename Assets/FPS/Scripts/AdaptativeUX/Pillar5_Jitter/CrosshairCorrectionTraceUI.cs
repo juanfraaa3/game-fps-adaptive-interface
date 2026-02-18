@@ -18,19 +18,22 @@ public class CrosshairCorrectionTraceUI : MonoBehaviour
     public int poolSize = 64;
 
     [Tooltip("Dot size in pixels.")]
-    public float dotSize = 4f;
+    public float dotSize = 7f;
 
     [Tooltip("Max radius in pixels around crosshair center.")]
-    public float maxRadiusPx = 18f;
+    public float maxRadiusPx = 45f;
 
     [Tooltip("Scales camera rotation delta to UI pixels. Increase if you see almost nothing.")]
-    public float rotationToPixels = 650f;
+    public float rotationToPixels = 1100f;
 
     [Tooltip("Minimum movement (in degrees/frame) to emit dots. Keep small.")]
     public float emitThresholdDeg = 0.02f;
 
     [Tooltip("Emit rate limit (seconds). 0.016 ~ 60Hz, 0.03 ~ 33Hz.")]
     public float emitInterval = 0.02f;
+
+    [Header("Adaptive")]
+    public JitterAdaptiveEvaluator Evaluator;
 
     [Header("Appearance")]
     [Tooltip("Optional sprite for the dots. If null, uses default UI sprite.")]
@@ -105,6 +108,11 @@ public class CrosshairCorrectionTraceUI : MonoBehaviour
 
     void Update()
     {
+        float aimAxis = Input.GetAxis("Aim");
+        bool aimButton = Input.GetButton("Aim");
+
+        if (aimAxis < 0.3f && !aimButton)
+            return;
         // Fade existing dots
         float tNow = Now;
         for (int i = 0; i < _dots.Length; i++)
@@ -126,6 +134,20 @@ public class CrosshairCorrectionTraceUI : MonoBehaviour
         }
 
         if (cameraTransform == null || crosshairCenter == null) return;
+        // =======================================
+        // ADAPTIVE CONTROL
+        // =======================================
+        if (Evaluator != null)
+        {
+            float weight = Evaluator.JitterAssistWeight01;
+
+            if (weight <= 0f)
+                return; // bajo P75 → no mostrar estela
+
+            dotAlpha = Mathf.Lerp(0.25f, 0.8f, weight);
+            dotLifetime = Mathf.Lerp(0.2f, 0.6f, weight);
+        }
+
 
         // Measure camera rotation delta (aim micro-movements)
         Quaternion cur = cameraTransform.rotation;

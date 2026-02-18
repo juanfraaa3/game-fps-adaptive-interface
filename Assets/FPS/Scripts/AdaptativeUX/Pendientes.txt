@@ -32,3 +32,14 @@
 	[X] Mixer de audio adpatativo
 	[]
 	[]
+
+Escrito:
+	[] Setar bien el numero de las imagenes
+	[] Referencias
+	[] Agregar imagenes de cada situacion del juego
+	[] Agregar imagenes de las adaptaciones del Jitter
+	[] Escribir pilar extra (Radar, balazos, canva de daño, etc...)
+	[] Mejorar Participantes (especificar mas cuando ya tenga esos datos [edad, sexo, etc...])
+	[] Arreglar anexos en Instrumentos (Para mostrar todas las variables, y cuestionarios)
+	[] Agregar que el juego tiene una etapa de adaptacion y acostumbracion antes, para que no llegue y se enfrente al juego de una (no evaluada)
+	

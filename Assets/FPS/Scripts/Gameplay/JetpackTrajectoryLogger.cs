@@ -53,6 +53,18 @@ namespace Unity.FPS.Gameplay
         int _zigzagCount;
         float _maxLateralOffset;
 
+        public System.Action<
+            float, // duration
+            float, // efficiency
+            float, // zigzagAverage
+            float, // curvatureNormalized
+            float, // maxLateralOffset
+            float, // landingError
+            float, // totalDistance
+            float, // verticalOscillation
+            int    // endedInDeath
+        > OnTrajectorySegmentEvaluated;
+
         void Awake()
         {
             InitializeFile();
@@ -240,6 +252,18 @@ namespace Unity.FPS.Gameplay
                 : 0f;
 
             float landingError = Vector3.Distance(_endPos, idealTarget);
+
+            OnTrajectorySegmentEvaluated?.Invoke(
+                duration,
+                efficiency,
+                zigzagAverage,
+                curvatureNormalized,
+                _maxLateralOffset,
+                landingError,
+                _totalDistance,
+                _verticalOscillation,
+                _endedInDeath ? 1 : 0
+            );
 
             // Escribir CSV
             LogRow(duration, efficiency, zigzagAverage, curvatureNormalized,

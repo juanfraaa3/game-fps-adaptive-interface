@@ -8,6 +8,7 @@ public class TrajectoryAttemptBuffer : MonoBehaviour
 
     [Header("Optional: auto-start current on spawn")]
     public bool activateCurrentOnStart = true;
+    public TrajectoryAdaptiveEvaluator Evaluator;
 
     void Start()
     {
@@ -20,15 +21,58 @@ public class TrajectoryAttemptBuffer : MonoBehaviour
     // Llama esto cuando el jugador MUERE
     public void OnPlayerDied()
     {
-        if (current == null || previous == null) return;
+        if (current == null || previous == null)
+            return;
 
-        // 1) Copiar el intento actual a "previous"
         var pts = current.GetPoints();
-        previous.SetPoints(pts, enableLine: pts.Length > 0);
 
-        // 2) Limpiar el current para el próximo intento (pero NO borres previous)
-        current.Clear(disableLine: false); // lo dejamos habilitado si quieres
+        float assistWeight = 0f;
+
+        if (Evaluator != null)
+            assistWeight = Evaluator.TrajectoryAssistWeight01;
+
+        // Bajo P75 → no mostrar nada
+        if (assistWeight <= 0f || pts.Length == 0)
+        {
+            previous.Clear(true);
+            current.Clear(disableLine: false);
+            return;
+        }
+
+        // Copiar trayectoria anterior
+        previous.SetPoints(pts, enableLine: true);
+
+        // ------------------------
+        // COLOR SOLO BASADO EN NIVEL ADAPTATIVO
+        // ------------------------
+        Color color;
+
+        if (assistWeight < 0.5f)
+            color = Color.yellow;
+        else
+            color = Color.red;
+
+        // Alpha proporcional
+        color.a = assistWeight;
+
+        previous.line.startColor = color;
+        previous.line.endColor = color;
+
+        // ------------------------
+        // GROSOR ADAPTATIVO
+        // ------------------------
+        float minWidth = 2f;
+        float maxWidth = 5f;
+
+        float width = Mathf.Lerp(minWidth, maxWidth, assistWeight);
+
+        previous.line.widthMultiplier = width;
+
+        // Limpiar current para el siguiente intento
+        current.Clear(disableLine: false);
     }
+
+
 
     // Llama esto cuando el jugador RESPAWNEA / comienza el nuevo intento
     public void OnPlayerRespawned()

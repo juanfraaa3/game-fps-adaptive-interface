@@ -5,6 +5,7 @@ public class CameraInstabilityTilt : MonoBehaviour
     [Header("References")]
     public Transform cameraPivot;
     public StabilityBandController[] stabilitySources;
+    public MovementAdaptiveEvaluator adaptiveEvaluator;
 
     [Header("Tilt Settings")]
     public float maxTiltDegrees = 1.5f;
@@ -36,11 +37,17 @@ public class CameraInstabilityTilt : MonoBehaviour
         if (Mathf.Abs(lateralNorm) < lateralDeadzone)
             lateralNorm = 0f;
 
+        float adaptiveMultiplier = 1f;
+
+        if (adaptiveEvaluator != null)
+            adaptiveMultiplier = adaptiveEvaluator.MovementAssistWeight01;
+
         float targetRoll = Mathf.Clamp(
-            lateralNorm * instability * maxTiltDegrees,
+            lateralNorm * instability * maxTiltDegrees * adaptiveMultiplier,
             -maxTiltDegrees,
             maxTiltDegrees
         );
+
 
         currentRoll = Mathf.Lerp(
             currentRoll,
