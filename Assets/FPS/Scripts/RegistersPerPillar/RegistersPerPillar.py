@@ -2,8 +2,8 @@ import os
 import pandas as pd
 
 # ========= CONFIG =========
-base_path = r"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\RegistersPerName"
-output_folder = r"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\RegistersPerPillar"
+base_path = r"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\RegistersPerName\Adaptive"
+output_folder = r"C:\Users\Juanes\adaptative_microgame\Assets\FPS\Scripts\RegistersPerPillar\Adaptive"
 
 sheets_to_copy = [
     "Orientation",
@@ -13,7 +13,7 @@ sheets_to_copy = [
     "Jitter",
     "Obstacle",
     "Movement",
-    "GeneralStats"
+    "General Stats"
 ]
 # ===========================
 

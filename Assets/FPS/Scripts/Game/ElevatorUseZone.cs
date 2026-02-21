@@ -12,7 +12,7 @@ public class ElevatorUseZone : MonoBehaviour
     public bool EnableKeyboardTest = true;
 
     // ⬜ Cuadrado (PS) / X (Xbox) con Input Manager clásico
-    const KeyCode SQUARE_PAD = KeyCode.JoystickButton2;
+    const KeyCode SQUARE_PAD = KeyCode.JoystickButton0;
 
     bool _playerInside;
 
