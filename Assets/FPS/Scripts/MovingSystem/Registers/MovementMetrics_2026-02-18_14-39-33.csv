@@ -1,9 +1,0 @@
-EventType;SegmentID;ElementID;TimeOnPlatform;RelativePositionStd;RelativePositionMean;RelativePositionMax;RelativePositionMin;SampleCount;EdgeRiskTime;CorrectionPeaks;RawCorrectionsCount;
-Platform;0;0;1.49;0.3583;0.9141;1.2093;0.1901;105;0.61;0;6
-Platform;0;0;3.72;0.2652;1.5539;3.0828;1.1874;276;1.68;0;2
-Platform;1;0;0.70;0.5434;7.0771;7.6060;5.6412;53;0.34;0;1
-Platform;1;0;5.40;0.1906;7.0733;8.4236;6.7603;386;0.25;0;2
-Platform;2;0;1.80;0.4345;6.4774;7.1904;5.4099;85;0.58;0;3
-Platform;2;0;1.58;0.3707;6.2193;6.8161;5.6283;74;0.21;0;2
-Platform;2;0;0.22;0.3273;6.9891;7.5457;6.5586;11;0.00;0;1
-Platform;2;0;3.94;0.4925;6.4220;7.2085;5.8167;208;0.73;0;3

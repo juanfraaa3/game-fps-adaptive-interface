@@ -1,3 +1,0 @@
-AttemptID;SegmentId;TargetPlatform;LandingOffset_m;LandingOffset_Forward_m;LandingOffset_Side_m;SafetyMargin_m;VerticalSpeed_mps;ApproachAngle_deg;MicroCorrections_0_5s;PreLandingHorizontalJitter;PostStabilizationTime_s;PostLandingDrift_m;LandingFailed;PostLandingFall;LandingType
-1;LandingSegment_1;TargetAnchor1;1.262917;0.3152618;-1.222935;1.799419;-12.94438;0;0;0.2781566;0.5962915;0.7168754;0;0;CleanLanding
-1;LandingSegment_2;TargetAnchor2;25.08886;21.26646;13.31122;0;-31.87132;0;0;0;0.3869848;0;1;0;MissedPlatform_Standing

@@ -1,7 +1,0 @@
-AttemptID;SegmentId;TargetPlatform;LandingOffset_m;LandingOffset_Forward_m;LandingOffset_Side_m;SafetyMargin_m;VerticalSpeed_mps;ApproachAngle_deg;MicroCorrections_0_5s;PreLandingHorizontalJitter;PostStabilizationTime_s;PostLandingDrift_m;LandingFailed;PostLandingFall;LandingType
-5;LandingSegment_1;TargetAnchor1;0.6423489;0.1500702;0.6245728;2.344745;-9.716313;0;0;0.06985583;1.195923;0.8248261;0;0;CleanLanding
-5;LandingSegment_2;TargetAnchor2;0.7462006;-0.5684357;0.4834213;2.881228;-12.87255;0;0;0.2015058;0;4.647233;1;1;HitThenFall
-5;LandingSegment_3;TargetAnchor4;2.529001;2.329292;0.9850082;0.3786082;-16.77899;0;0;1.351394;1.116882;1.875458;0;0;CleanLanding
-5;LandingSegment_4;TargetAnchor5;0.977762;0.9728622;-0.09776306;1.855779;-13.2521;0;0;0.3739972;0.5494995;0.3354073;0;0;CleanLanding
-5;LandingSegment_5;TargetAnchor6;3.141551;3.018772;0.8696899;0;-13.66285;0;0;0.8918237;1.342255;4.92554;1;0;MissedPlatform_Standing
-5;LandingSegment_6;TargetAnchor7;1.355244;1.157909;-0.7042236;1.604495;-12.40353;0;0;0.9543461;1.484894;2.46658;0;0;CleanLanding

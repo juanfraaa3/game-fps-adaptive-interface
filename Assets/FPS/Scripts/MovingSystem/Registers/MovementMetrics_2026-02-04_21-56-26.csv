@@ -1,5 +1,0 @@
-EventType;SegmentID;ElementID;TimeOnPlatform;RelativePositionStd;RelativePositionMean;RelativePositionMax;RelativePositionMin;SampleCount;EdgeRiskTime;CorrectionPeaks;RawCorrectionsCount;
-Platform;2;0;3.28;0.3220;10.0631;11.7367;9.8303;38;0.65;2;16
-DEATH;;;;;;;;;;;;;;;
-Platform;2;0;0.10;0.0000;10.1283;10.1283;10.1283;1;0.00;0;0
-DEATH;;;;;;;;;;;;;;;

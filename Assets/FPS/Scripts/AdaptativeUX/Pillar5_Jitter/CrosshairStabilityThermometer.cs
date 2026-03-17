@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CrosshairStabilityThermometer : MonoBehaviour
 {
     [Header("References (assign in Inspector)")]
     [Tooltip("The visual root that will jitter/pulse (child RectTransform).")]
     public RectTransform crosshairVisual;
+
+    [Tooltip("Optional Image component of the crosshair so we can tint it red under stress.")]
+    public Image crosshairImage;
 
     [Header("Input (0..1)")]
     [Range(0f, 1f)]
@@ -30,6 +34,17 @@ public class CrosshairStabilityThermometer : MonoBehaviour
 
     [Tooltip("Pulse speed.")]
     public float pulseSpeed = 3.5f;
+
+    [Header("Stress Warning")]
+    [Tooltip("If assist weight goes above this threshold, the crosshair turns red and pulses harder.")]
+    public float stressThreshold = 0.75f;
+
+    public Color normalColor = Color.white;
+    public Color stressColor = Color.red;
+
+    [Tooltip("Extra pulse multiplier when stressed.")]
+    public float stressPulseMultiplier = 2f;
+
     [Header("Aim Filter")]
     public float AimActivationThreshold = 0.3f;
 
@@ -56,12 +71,21 @@ public class CrosshairStabilityThermometer : MonoBehaviour
 
         _visualStability = Mathf.Clamp01(targetStability);
 
-        _baseAnchoredPos = crosshairVisual.anchoredPosition;
-        _baseLocalScale = crosshairVisual.localScale;
+        if (crosshairVisual != null)
+        {
+            _baseAnchoredPos = crosshairVisual.anchoredPosition;
+            _baseLocalScale = crosshairVisual.localScale;
+        }
+
+        if (crosshairImage == null && crosshairVisual != null)
+            crosshairImage = crosshairVisual.GetComponent<Image>();
     }
 
     void Update()
     {
+        if (crosshairVisual == null)
+            return;
+
         // ----------------------------------------------------
         // AIM FILTER (PS4 + Xbox compatible)
         // ----------------------------------------------------
@@ -83,10 +107,13 @@ public class CrosshairStabilityThermometer : MonoBehaviour
                 // Restaurar estado estable
                 crosshairVisual.anchoredPosition = _baseAnchoredPos;
                 crosshairVisual.localScale = _baseLocalScale;
+
+                if (crosshairImage != null)
+                    crosshairImage.color = normalColor;
+
                 return;
             }
         }
-
 
         // Debug quick-test without any adaptive logic
         if (debugKeys)
@@ -95,26 +122,40 @@ public class CrosshairStabilityThermometer : MonoBehaviour
             if (Input.GetKeyDown(setUnstableKey)) targetStability = 0f;
             if (Input.GetKeyDown(setMidKey)) targetStability = 0.5f;
         }
+
         // =======================================
         // ADAPTIVE INPUT (reemplaza debug real)
         // =======================================
+        float assistWeight = 0f;
+
         if (Evaluator != null)
         {
-            float weight = Evaluator.JitterAssistWeight01;
+            assistWeight = Evaluator.JitterAssistWeight01;
 
-            if (weight <= 0f)
+            if (assistWeight <= 0f)
                 targetStability = 1f; // totalmente estable
             else
-                targetStability = 1f - weight;
+                targetStability = 1f - assistWeight;
         }
-
 
         targetStability = Mathf.Clamp01(targetStability);
 
         // Smooth stability so it feels continuous (no sudden jumps)
-        _visualStability = Mathf.SmoothDamp(_visualStability, targetStability, ref _stabilityVel, stabilitySmoothTime);
+        _visualStability = Mathf.SmoothDamp(
+            _visualStability,
+            targetStability,
+            ref _stabilityVel,
+            stabilitySmoothTime
+        );
 
         float instability = 1f - _visualStability;
+        bool stressed = assistWeight >= stressThreshold;
+
+        // --- Crosshair Color ---
+        if (crosshairImage != null)
+        {
+            crosshairImage.color = stressed ? stressColor : normalColor;
+        }
 
         // --- Jitter: small animated offset in UI pixels ---
         // PerlinNoise gives smooth randomness (no harsh shaking)
@@ -131,7 +172,8 @@ public class CrosshairStabilityThermometer : MonoBehaviour
         if (pulseScaleAmount > 0f)
         {
             float pulse = Mathf.Sin(Time.unscaledTime * Mathf.PI * 2f * pulseSpeed) * 0.5f + 0.5f; // 0..1
-            float scaleAdd = pulseScaleAmount * instability * pulse; // 0..max
+            float pulseBoost = stressed ? stressPulseMultiplier : 1f;
+            float scaleAdd = pulseScaleAmount * instability * pulse * pulseBoost;
             crosshairVisual.localScale = _baseLocalScale * (1f + scaleAdd);
         }
         else

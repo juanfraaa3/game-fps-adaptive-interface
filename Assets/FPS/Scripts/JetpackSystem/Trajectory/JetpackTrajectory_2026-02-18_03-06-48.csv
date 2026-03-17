@@ -1,4 +1,0 @@
-AttemptID;StartTime;Duration;Efficiency;ZigZag_Average;Curvature_Normalized;MaxLateralOffset;LandingError;TotalDistance;VerticalOscillation;EndedInDeath;TargetAnchorName
-1;6.537363;1.948143;1;2.56509;7.932138;0.7209812;1.957538;24.90021;19.69609;0;TargetAnchor1
-1;14.34002;1.654461;1;2.854558;10.34804;0.2971485;0.8139293;18.48228;7.20216;0;TargetAnchor2
-1;21.22088;1.515957;1;2.135056;6.721282;0.5147104;1.542293;19.05936;11.18313;0;TargetAnchor3
