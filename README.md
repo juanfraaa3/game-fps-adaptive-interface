@@ -1,7 +1,7 @@
 # 🎮 JUANES – Adaptive Gamepad Interface
 
 <p align="center">
-  <img src="media/juanes-gameplay.gif" width="700"/>
+  <img src="git_gif.gif" width="700"/>
 </p>
 
 > Adaptive interface system designed to support early-stage gamepad mastery without modifying game difficulty.
