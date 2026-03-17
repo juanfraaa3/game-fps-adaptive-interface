@@ -70,7 +70,7 @@ Results suggest improvements in **learning progression and control stability** u
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/juanes-adaptive-gamepad-interface.git
+git clone https://github.com/juanfraaa3/game-fps-adaptive-interface.git
 ```
 
 2. Open the project in Unity
